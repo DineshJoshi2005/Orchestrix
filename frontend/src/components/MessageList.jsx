@@ -5,13 +5,14 @@ import { useEffect, useRef } from "react";
 import LoadingAnimation from './LoadingAnimation.jsx';
 const MessageList = () => {
   const { selectedConversation } = useSelector(state => state.conversation);
-  const { messages } = useSelector(state => state.message);
+  const { messages, isLoading } = useSelector(state => state.message);
   const bottomRef = useRef(null);
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({
+    bottomRef?.current?.scrollIntoView({
       behavior: "smooth",
+      block:"end"
     });
-  }, [messages]);
+  }, [messages,isLoading]);
   return (
     <div className='flex-1 overflow-y-auto px-6 py-6 space-y-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
       {messages.length == 0 || !selectedConversation ?
@@ -38,7 +39,8 @@ const MessageList = () => {
             </div>
             
           ))}
-          <LoadingAnimation/>
+          {isLoading && <LoadingAnimation /> }
+          
           <div ref={bottomRef}></div>
         </div>}
     </div>
