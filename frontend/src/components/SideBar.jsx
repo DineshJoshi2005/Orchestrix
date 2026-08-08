@@ -1,5 +1,5 @@
 import React from 'react'
-import { Coins, LogOut, MessageSquare, PanelLeftIcon, PanelRight, PenBoxIcon, PenSquare, Plus, User } from "lucide-react"
+import { Coins, LogOut, Menu, MessageSquare, PanelLeftIcon, PanelRight, PenBoxIcon, PenSquare, Plus, User, X } from "lucide-react"
 import { useState } from 'react'
 import { useEffect } from 'react';
 import { getConversation } from '../features/getConversations.js';
@@ -9,13 +9,17 @@ import { createConversation } from '../features/createConversation.js';
 import logOut from '../features/logOut.js';
 import { setUserData } from '../redux/userSlice.js';
 import { easeInOut, motion } from "motion/react"
+import BillingDrawer from './BillingDrawer.jsx';
 
 const SideBar = () => {
     const [collapsed, setCollapsed] = useState(false);
     const [imageError, setImageError] = useState(false);
+    const [showBilling, setShowBilling] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
     const dispatch = useDispatch();
     const { conversations, selectedConversation } = useSelector(state => state.conversation);
     const { userData } = useSelector(state => state.user);
+    
     useEffect(() => {
         const getConv = async () => {
             const data = await getConversation();
@@ -33,6 +37,11 @@ const SideBar = () => {
     
 
     return (
+        <>
+            <button className='lg:hidden fixed top-3.5 left-4 z-50 flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d0f14] border border-white/[0.06] text-slate-400 hover:text-slate-200 transition-colors duration-150 cursor-pointer' onClick={() => setMobileOpen(true)}>
+                <Menu size={15} />
+            </button>
+            {mobileOpen && <div onClick={() => setMobileOpen(false)} className='lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm'></div>}
         <motion.div
             initial={{ width: 270 }}
             animate={{ width: collapsed ? 56 : 270 }}
@@ -40,13 +49,19 @@ const SideBar = () => {
                 duration:0.25,
                 ease: easeInOut
             }}
-            className='fixed lg:static inset-y-0 left-0 z-50 h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06]'>
+                className={`fixed lg:static inset-y-0 left-0 z-50 h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06] ${mobileOpen? "translate-x-0":"-translate-x-full lg:translate-x-0"}`}>
+                
             {!collapsed ?
                 <div className='flex flex-col h-full'>
                     <div className='flex items-center gap-2.5 px-4 py-4 border-b  border-white/[0.06]'>
                         <div className='hidden lg:flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover:bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer ' onClick={() => setCollapsed(true)}>
                             <PanelLeftIcon />
-                        </div>
+                            </div>
+                            <button onClick={() => setMobileOpen(false)}
+                            className='lg:hidden flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-200 hover: bg-white/[0.05] transition-colors duration-150 bg-transparent border-none cursor-pointer'
+                            >
+                                <X/>
+                            </button>
                         <span className='text-[16px] font-semibold text-slate-100 tracking-tight flex-1'>
                             Orchestrix
                         </span>
@@ -113,7 +128,7 @@ const SideBar = () => {
                                     <p className='text-[11px] text-slate-600 mt-px'>{"Free Plan"}</p>
                                 </div>
                                 <div className='flex gap-1'>
-                                    <button className='flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150'>
+                                    <button onClick={()=>setShowBilling(true)} className='flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-yellow-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150'>
                                         <Coins />
                                     </button>
                                     <button className='flex items-center justify-center w-7 h-7 rounded-[7px] border-none bg-transparent text-slate-600 cursor-pointer hover:bg-white/[0.08] hover:text-slate-400 transition-all duration-150' onClick={() => {
@@ -165,7 +180,11 @@ const SideBar = () => {
                     </div>
 
                 </div>}
-        </motion.div>
+            
+            
+            </motion.div>
+            <BillingDrawer open={showBilling} onClose={() => setShowBilling(false)} />
+            </>
     )
     
 }

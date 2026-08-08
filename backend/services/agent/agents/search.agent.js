@@ -1,4 +1,5 @@
 import { getSearchTool } from "../config/tavily.js";
+import { deductCredits } from "../utils/deductCredits.js";
 
 
 export const searchAgent = async (state) => {
@@ -10,6 +11,7 @@ export const searchAgent = async (state) => {
             Prefer official sources.
             `
         });
+        await deductCredits(state.userId, "search")
         console.log(result);
         return {
             ...state,

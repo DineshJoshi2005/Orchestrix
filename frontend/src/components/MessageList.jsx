@@ -2,6 +2,7 @@ import React from 'react'
 import { useSelector } from 'react-redux'
 import MessageBubble from './MessageBubble.jsx';
 import { useEffect, useRef } from "react";
+import LoadingAnimation from './LoadingAnimation.jsx';
 const MessageList = () => {
   const { selectedConversation } = useSelector(state => state.conversation);
   const { messages } = useSelector(state => state.message);
@@ -34,8 +35,10 @@ const MessageList = () => {
           {messages?.map((msg, i) => (
               <div >
                 <MessageBubble role={ msg?.role} content={msg?.content} images={msg?.images || []} />
-              </div>
+            </div>
+            
           ))}
+          <LoadingAnimation/>
           <div ref={bottomRef}></div>
         </div>}
     </div>

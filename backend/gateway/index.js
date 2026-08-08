@@ -21,7 +21,8 @@ app.use(cookieParser())
 app.use(morgan("dev"));
 app.use("/auth", proxy(process.env.AUTH_SERVICE));
 app.use("/chat", authenticate, proxyWithHeader(process.env.CHAT_SERVICE));
-app.use("/agent", authenticate, proxy(process.env.AGENT_SERVICE));
+app.use("/agent", authenticate, proxyWithHeader(process.env.AGENT_SERVICE));
+app.use("/billing", authenticate, proxyWithHeader(process.env.BILLING_SERVICE));
 app.get('/me', authenticate, getCurrentUser);
 
 app.get("/", (req, res) => {

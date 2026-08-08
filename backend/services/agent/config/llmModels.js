@@ -19,7 +19,22 @@ export const getModel = (agent) => {
                 temperature: 0,
                 maxTokens: 8000
             })
-
+        
+        case "pdf":
+            return new ChatGoogleGenerativeAI({
+                model: "gemini-3.5-flash",
+                temperature: 0.2,
+            });
+        
+        case "ppt":
+            return new ChatGoogleGenerativeAI({
+                model: "gemini-3.5-flash",
+                temperature: 0.4,
+                    });
+        case "imageAnalyzer":
+            return new ChatGoogleGenerativeAI({
+                model: "gemini-3.5-flash"
+            });
         default:
             return new ChatGroq({
                 model: "openai/gpt-oss-120b",

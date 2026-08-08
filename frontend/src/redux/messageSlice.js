@@ -4,7 +4,8 @@ const messageSlice = createSlice({
     name: "message",
     initialState: {
         messages: [],
-        artifacts:[],
+        artifacts: [],
+        isLoading: false
     },
     reducers: {
         setMessages: (state, action) => {
@@ -15,6 +16,9 @@ const messageSlice = createSlice({
         },
         setArtifacts: (state, action) => {
             state.artifacts = action.payload
+        },
+        setIsLoading: (state, action) => {
+            state.isLoading = action.payload
         },
         updateArtifactFile: (state, action) => {
             const { artifactId, fileIndex, content } = action.payload;
@@ -30,5 +34,5 @@ const messageSlice = createSlice({
     }
 });
 
-export const { setMessages, addMessages, setArtifacts,updateArtifactFile } = messageSlice.actions;
+export const { setMessages, addMessages, setIsLoading, setArtifacts,updateArtifactFile } = messageSlice.actions;
 export default messageSlice.reducer

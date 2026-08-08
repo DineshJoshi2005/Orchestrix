@@ -1,10 +1,12 @@
 import { getModel } from "../config/llmModels.js";
+import { deductCredits } from "../utils/deductCredits.js";
 
 export const codingAgent = async (state) => {
-    const intentLLM = await getModel("intent");
-    const llm = await getModel("coding");
+    try {
+        const intentLLM = await getModel("intent");
+        const llm = await getModel("coding");
 
-    const intentRes = await intentLLM.invoke(`
+        const intentRes = await intentLLM.invoke(`
 You are an intent classifier.
 
 Return ONLY one of these values:
@@ -21,13 +23,13 @@ User Request:
 ${state.prompt}
 `);
 
-    const intent = intentRes.content.trim();
+        const intent = intentRes.content.trim();
 
-    console.log(intent);
+        console.log(intent);
 
-    if (intent === "CODE_GENERATION") {
+        if (intent === "CODE_GENERATION") {
 
-        const prompt = `
+            const prompt = `
 You are Orchestrix Coding Agent.
 
 Generate the requested project.
@@ -88,38 +90,38 @@ User Request:
 ${state.prompt}
 `;
 
-        const res = await llm.invoke(prompt);
+            const res = await llm.invoke(prompt);
 
-        let text = String(res.content).trim();
+            let text = String(res.content).trim();
 
-        
-        text = text
-            .replace(/^```json\s*/i, "")
-            .replace(/^```\s*/i, "")
-            .replace(/\s*```$/i, "")
-            .trim();
-        
-        if (!text.endsWith("}")) {
-            throw new Error(
-                "Model output appears truncated. Increase maxTokens or generate a smaller project."
-            );
+
+            text = text
+                .replace(/^```json\s*/i, "")
+                .replace(/^```\s*/i, "")
+                .replace(/\s*```$/i, "")
+                .trim();
+
+            if (!text.endsWith("}")) {
+                throw new Error(
+                    "Model output appears truncated. Increase maxTokens or generate a smaller project."
+                );
             }
 
-        let data;
+            let data;
 
-        try {
+            try {
 
-            data = JSON.parse(text);
+                data = JSON.parse(text);
 
-        } catch (err) {
+            } catch (err) {
 
-            console.log("Initial JSON Parse Failed");
-            console.log(err.message);
+                console.log("Initial JSON Parse Failed");
+                console.log(err.message);
 
-            
-            const repairLLM = await getModel("chat");
 
-            const repaired = await repairLLM.invoke(`
+                const repairLLM = await getModel("chat");
+
+                const repaired = await repairLLM.invoke(`
 You are a JSON repair tool.
 
 Your ONLY job is to repair invalid JSON.
@@ -138,31 +140,32 @@ JSON:
 ${text}
 `);
 
-            let repairedText = String(repaired.content)
-                .replace(/^```json\s*/i, "")
-                .replace(/^```\s*/i, "")
-                .replace(/\s*```$/i, "")
-                .trim();
+                let repairedText = String(repaired.content)
+                    .replace(/^```json\s*/i, "")
+                    .replace(/^```\s*/i, "")
+                    .replace(/\s*```$/i, "")
+                    .trim();
 
-            data = JSON.parse(repairedText);
+                data = JSON.parse(repairedText);
 
+            }
+            await deductCredits(state.userId, "coding")
+
+            return {
+                ...state,
+                aiResponse: "Code Generated Successfully",
+                artifacts: [
+                    {
+                        id: Date.now(),
+                        type: "Project",
+                        title: state.prompt,
+                        files: data.files || []
+                    }
+                ]
+            };
         }
 
-        return {
-            ...state,
-            aiResponse: "Code Generated Successfully",
-            artifacts: [
-                {
-                    id: Date.now(),
-                    type: "Project",
-                    title: state.prompt,
-                    files: data.files || []
-                }
-            ]
-        };
-    }
-
-    const res = await llm.invoke(`
+        const res = await llm.invoke(`
 The user's request is:
 
 ${intent}
@@ -189,11 +192,20 @@ User Request:
 
 ${state.prompt}
 `);
-    console.log(res.response_metadata);
+        console.log(res.response_metadata);
+        await deductCredits(state.userId, "coding")
 
-    return {
-        ...state,
-        aiResponse: res.content,
-        artifacts: []
-    };
+        return {
+            ...state,
+            aiResponse: res.content,
+            artifacts: []
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            ...state,
+            aiResponse: `😢 Can't Generate the code`,
+            artifacts: []
+        };
+    }
 };

@@ -1,30 +1,33 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { getModel } from "../config/llmModels.js";
 import { getMemory } from "../config/memory.js";
+import { deductCredits } from "../utils/deductCredits.js";
 
 export const chatAgent = async (state) => {
     
-    const llm = await getModel("chat");
-    const history = await getMemory(state.conversationId);
+    try {
+        
+        const llm = await getModel("chat");
+        const history = await getMemory(state.conversationId);
 
-    const searchResults = state.searchResults?.results
-        ?.slice(0, 3)
-        .map(result => `
+        const searchResults = state.searchResults?.results
+            ?.slice(0, 3)
+            .map(result => `
 Title: ${result.title}
 Source: ${result.url}
 Content: ${result.content.slice(0, 1200)}
 `)
-        .join("\n");
+            .join("\n");
 
-    const searchContext = searchResults
-        ? `
+        const searchContext = searchResults
+            ? `
 Reference Information:
 
 ${searchResults}
 `
-        : "";
+            : "";
 
-    const systemPrompt = `
+        const systemPrompt = `
 You are Orchestrix, an intelligent AI assistant.
 
 ${searchContext}
@@ -67,25 +70,32 @@ Markdown Formatting:
 - Never generate unnecessarily large walls of text.
 `;
 
-    const messages = [
-        new SystemMessage(systemPrompt)
-    ];
+        const messages = [
+            new SystemMessage(systemPrompt)
+        ];
 
-    history.forEach(msg => {
-        if (msg.role === "user") {
-            messages.push(new HumanMessage(msg.content));
-        } else {
-            messages.push(new AIMessage(msg.content));
-        }
-    });
+        history.forEach(msg => {
+            if (msg.role === "user") {
+                messages.push(new HumanMessage(msg.content));
+            } else {
+                messages.push(new AIMessage(msg.content));
+            }
+        });
 
-    messages.push(new HumanMessage(state.prompt));
+        messages.push(new HumanMessage(state.prompt));
 
-    const response = await llm.invoke(messages);
+        const response = await llm.invoke(messages);
 
-
-    return {
-        ...state,
-        aiResponse: response.content
-    };
+        await deductCredits(state.userId,"chat")
+        return {
+            ...state,
+            aiResponse: response.content
+        };
+    } catch (error) {
+        console.log(error);
+        return {
+            ...state,
+            aiResponse: "😢 Can't Generate response"
+        };
+    }
 };
