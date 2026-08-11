@@ -49,7 +49,7 @@ const SideBar = () => {
                 duration:0.25,
                 ease: easeInOut
             }}
-                className={`fixed lg:static inset-y-0 left-0 z-50 h-screen shrink-0 bg-[#0d0f14] border-r border-white/[0.06] ${mobileOpen? "translate-x-0":"-translate-x-full lg:translate-x-0"}`}>
+                className={`fixed lg:static inset-y-0 left-0 z-50 h-dvh shrink-0 bg-[#0d0f14] border-r border-white/[0.06] ${mobileOpen? "translate-x-0":"-translate-x-full lg:translate-x-0"}`}>
                 
             {!collapsed ?
                 <div className='flex flex-col h-full'>
