@@ -80,7 +80,7 @@ const SideBar = () => {
                         </button>
                     </div>
 
-                    {conversations.length == 0
+                    {conversations?.length == 0
                         ?
                         <div className='px-5 pt-4 pb-1.5 text[10.5px] font-semibold uppercase tracking-widest text-slate-600'>
                             No Recent Conversation
@@ -92,7 +92,7 @@ const SideBar = () => {
                     }
 
                     <div className='flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'>
-                        {conversations.map((conv, i) => {
+                        {conversations?.map((conv, i) => {
                             const isActive = selectedConversation?._id == conv?._id;
                             return (
                                 <div onClick={() => { dispatch(setSelectedConversation(conv)) }} className={`flex items-center gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5  rounded-[10px] border transition-colors durations-150 ${isActive ? "bg-indigo-500/10 border-indigo-500/[0.18]" : "bg-transparent border-transparent"}`}>
@@ -118,7 +118,7 @@ const SideBar = () => {
                                     {
                                         (userData?.avatar && !imageError)
                                             ?
-                                            <img className='w-9 h-9 rounded-[10px] object-cover border-2 border-indigo-500/25' src={userData.avatar} alt="image" onError={() => setImageError(true)} />
+                                            <img className='w-9 h-9 rounded-[10px] object-cover border-2 border-indigo-500/25' src={userData?.avatar} alt="image" onError={() => setImageError(true)} />
                                             :
                                             <div className='w-9 h-9 rounded-[10px] bg-white/[0.06] flex items-center justify-center'><User /></div>
                                     }
@@ -154,7 +154,7 @@ const SideBar = () => {
                     </button>
 
                     <div className='flex-1 overflow-y-auto px-2.5 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-5'>
-                        {conversations.map((conv, i) => {
+                        {conversations?.map((conv, i) => {
                             const isActive = selectedConversation?._id == conv?._id;
                             return (
                                 <div onClick={() => { dispatch(setSelectedConversation(conv)) }} className={`flex items-center gap-2.5 cursor-pointer mb-0.5 px-3 py-2.5  rounded-[10px] border transition-colors durations-150 ${isActive ? "bg-indigo-500/10 border-indigo-500/[0.18]" : "bg-transparent border-transparent"}`}>

@@ -1,4 +1,4 @@
-import { Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, Paperclip, PaperclipIcon, Presentation, Send, SendHorizonal, X, Zap } from 'lucide-react'
+import { Code2, FileText, Globe, ImageIcon, MessageSquare, Mic, MicIcon, MicOff, Paperclip, PaperclipIcon, Presentation, Send, SendHorizonal, X, Zap } from 'lucide-react'
 import React, { useRef, useState } from "react";
 import sendMessage from "../features/sendMessage.js";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,11 +6,14 @@ import { addMessages, setArtifacts, setIsLoading, setMessages } from "../redux/m
 import { addConversation, setConvTitle, setSelectedConversation } from "../redux/conversationSlice.js";
 import { createConversation } from "../features/createConversation.js";
 import { updateConversation } from "../features/updateConversation.js";
+import { useEffect } from 'react';
 
 const ChatInput = () => {
     const [value, setValue] = useState("");
     const [selectedAgent, setSelectedAgent] = useState("Auto");
     const [selectedFile, setSelectedFile] = useState(null);
+    const [listening, setListening] = useState(false);
+    const recognitionRef = useRef(null);
 
     const fileRef = useRef(null);
 
@@ -23,6 +26,45 @@ const ChatInput = () => {
     );
 
     const dispatch = useDispatch();
+
+
+    useEffect(() => {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) return;
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-US";
+        recognition.interimResults = true;
+        recognition.continuous = true;
+
+        recognition.onresult = (event) => {
+            let transcript = "";
+            for (let index = event.resultIndex; index < event.results.length; index++) {
+                transcript += event.results[index][0].transcript;
+                
+            }
+            
+            setValue(transcript)
+        }
+        recognition.onend = () => {
+            setListening(false)
+        }
+        recognitionRef.current = recognition;
+
+    }, [])
+
+    const toggleMic = () => {
+        if (!recognitionRef.current) {
+            alert("speech is not supported");
+        }
+        if (listening) {
+            recognitionRef.current.stop();
+            setListening(false);
+        }
+        else {
+            recognitionRef.current.start();
+            setListening(true);
+        }
+    }
 
     const handleSendMessage = async () => {
         if (!value.trim() && !selectedFile) {
@@ -306,12 +348,11 @@ const ChatInput = () => {
                             <Paperclip size={16} />
                         </button>
 
-                        <button
+                        <button onClick={toggleMic}
                             type="button"
                             disabled={isLoading}
-                            className="flex items-center justify-center w-8 h-8 rounded-lg text-slate-600 hover:text-slate-400 hover:bg-white/[0.05] border border-transparent hover:border-white/[0.06] transition-all duration-150 bg-transparent cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
-                        >
-                            <Mic size={16} />
+                            className={`flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-150 cursor-pointer ${listening ?"bg-red-500 text-white":"text-slate-600 hover:bg-white/[0.05]"}`}                        >
+                            { listening?<MicIcon size={16}/>:<MicOff size={16}/>}
                         </button>
 
                     </div>
