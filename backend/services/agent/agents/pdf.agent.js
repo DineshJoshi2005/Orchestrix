@@ -6,10 +6,26 @@ import { deductCredits } from "../utils/deductCredits.js";
 import { checkAgentLimit } from "../config/agentLimit.js";
 
 export const pdfAgent = async (state) => {
+    const requestStart = Date.now();
+
     try {
-        await checkAgentLimit(state.userId, "pdf")
-        
+        console.log(`[PDF] Request started | user=${state.userId}`);
+
+        const limitStart = Date.now();
+
+        await checkAgentLimit(state.userId, "pdf");
+
+        console.log(
+            `[PDF] Agent limit check completed | ${Date.now() - limitStart}ms`
+        );
+
+        const llmStart = Date.now();
+
         const llm = getModel("pdf");
+
+        console.log(
+            `[PDF] Model initialized | ${Date.now() - llmStart}ms`
+        );
 
         const prompt = `
 You are Orchestrix PDF Generator.
@@ -27,14 +43,14 @@ Never explain anything.
 JSON Format:
 
 {
-  "title":"",
-  "subtitle":"",
-  "sections":[
-    {
-      "heading":"",
-      "points":[]
-    }
-  ]
+"title":"",
+"subtitle":"",
+"sections":[
+{
+"heading":"",
+"points":[]
+}
+]
 }
 
 Requirements:
@@ -54,14 +70,20 @@ Topic:
 ${state.prompt}
 `;
 
+        console.log(`[PDF] Prompt prepared`);
+
+        const llmInvokeStart = Date.now();
+
         const res = await llm.invoke(prompt);
 
-        console.log("========== RAW RESPONSE ==========");
-        console.dir(res, { depth: null });
+        console.log(
+            `[PDF] LLM response received | ${Date.now() - llmInvokeStart}ms`
+        );
+
+        const parseStart = Date.now();
 
         let text = "";
 
-        // Handle every possible response format
         if (typeof res.content === "string") {
             text = res.content;
         }
@@ -79,20 +101,15 @@ ${state.prompt}
 
         text = text.trim();
 
-        console.log("========== RAW TEXT ==========");
-        console.log(text);
-
         if (!text) {
             throw new Error("The model returned an empty response.");
         }
 
-        // Remove markdown fences if present
         text = text
             .replace(/```json/gi, "")
             .replace(/```/g, "")
             .trim();
 
-        // Find JSON object
         const firstBrace = text.indexOf("{");
         const lastBrace = text.lastIndexOf("}");
 
@@ -107,12 +124,30 @@ ${state.prompt}
         try {
             data = JSON.parse(text);
         } catch (err) {
-            console.log("========== INVALID JSON ==========");
-            console.log(text);
             throw new Error("Model returned malformed JSON.");
         }
-        await deductCredits(state.userId, "pdf")
+
+        console.log(
+            `[PDF] Response parsed successfully | ${Date.now() - parseStart}ms`
+        );
+
+        const creditStart = Date.now();
+
+        await deductCredits(state.userId, "pdf");
+
+        console.log(
+            `[PDF] Credits deducted | ${Date.now() - creditStart}ms`
+        );
+
+        const pdfStart = Date.now();
+
         const pdfBuffer = await generatePdf(data);
+
+        console.log(
+            `[PDF] PDF generated | ${Date.now() - pdfStart}ms | size=${pdfBuffer.length} bytes`
+        );
+
+        const uploadStart = Date.now();
 
         const filename = `pdf-${Date.now()}.pdf`;
 
@@ -122,7 +157,21 @@ ${state.prompt}
             "application/pdf"
         );
 
+        console.log(
+            `[PDF] PDF uploaded to S3 | ${Date.now() - uploadStart}ms`
+        );
+
+        const urlStart = Date.now();
+
         const downloadUrl = await getFromS3(filename, 600);
+
+        console.log(
+            `[PDF] Download URL generated | ${Date.now() - urlStart}ms`
+        );
+
+        console.log(
+            `[PDF] Request completed | total=${Date.now() - requestStart}ms`
+        );
 
         return {
             ...state,
@@ -138,7 +187,10 @@ ${state.prompt}
         };
 
     } catch (error) {
-        console.error(error);
+
+        console.error(
+            `[PDF] Request failed | total=${Date.now() - requestStart}ms | message=${error?.message}`
+        );
 
         return {
             ...state,
