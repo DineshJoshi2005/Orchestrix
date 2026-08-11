@@ -111,7 +111,7 @@ const SideBar = () => {
 
                     <div className='mx-2.5 h-px bg-white/[0.06]' />
 
-                    <div className='p-3.5'>
+                        <div className='p-3.5 pb-[calc(0.875rem+env(safe-area-inset-bottom))]'>
                         {userData ?
                             (<div className='flex items-center gap-2.5 cursor-pointer rounded-xl  px-3 py-2.5 hover:bg-white/[0.05] transition-colors duration-150'>
                                 <div className='relative shrink-0'>

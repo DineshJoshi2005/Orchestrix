@@ -133,14 +133,14 @@ const ChatInput = () => {
             }
 
             dispatch(
-                setArtifacts(data.artifacts || [])
+                setArtifacts(data?.artifacts || [])
             );
 
             dispatch(
                 addMessages({
                     role: "assistant",
-                    content: data.answer,
-                    images: data.images || []
+                    content: data?.answer,
+                    images: data?.images || []
                 })
             );
 
@@ -153,8 +153,8 @@ const ChatInput = () => {
 
             setSelectedFile(null);
 
-            if (fileRef.current) {
-                fileRef.current.value = "";
+            if (fileRef?.current) {
+                fileRef?.current.value = "";
             }
         }
     };
