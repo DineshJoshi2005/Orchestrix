@@ -1,0 +1,9 @@
+{
+    "$schema": "https://openapi.vercel.sh/vercel.json",
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "http://orchestrix-lb-1332021516.ap-south-1.elb.amazonaws.com/:path*"
+        }
+    ]
+}
