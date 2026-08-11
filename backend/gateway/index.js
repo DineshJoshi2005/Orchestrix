@@ -26,7 +26,7 @@ app.use("/billing", authenticate, proxyWithHeader(process.env.BILLING_SERVICE));
 app.get('/me', authenticate, getCurrentUser);
 
 app.get("/", (req, res) => {
-    res.json({message: "Hello from Gateway."})
+    res.json({message: "Hello from Gateway v1"})
 })
 
 app.listen(port, () => {

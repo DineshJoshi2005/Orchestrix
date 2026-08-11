@@ -36,7 +36,7 @@ jobs:
 
       - name: tag Gateway
         run: |
-          docker tag gateway:latest\
+          docker tag gateway:latest \
           $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/gateway:latest
 
       - name: push Gateway
@@ -54,7 +54,7 @@ jobs:
 
       - name: tag Auth
         run: |
-          docker tag auth-service:latest\
+          docker tag auth-service:latest \
           $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/auth-service:latest
 
       - name: push Auth
@@ -73,7 +73,7 @@ jobs:
 
       - name: tag Chat
         run: |
-          docker tag chat-service:latest\
+          docker tag chat-service:latest \
           $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/chat-service:latest
 
       - name: push Chat
@@ -91,7 +91,7 @@ jobs:
 
       - name: tag Agent
         run: |
-          docker tag agent-service:latest\
+          docker tag agent-service:latest \
           $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/agent-service:latest
 
       - name: push Agent
@@ -109,7 +109,7 @@ jobs:
 
       - name: tag Billing
         run: |
-          docker tag billing-service:latest\
+          docker tag billing-service:latest \
           $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/billing-service:latest
 
       - name: push Billing
