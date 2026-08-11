@@ -9,23 +9,11 @@ export const pdfAgent = async (state) => {
     const requestStart = Date.now();
 
     try {
-        console.log(`[PDF] Request started | user=${state.userId}`);
-
-        const limitStart = Date.now();
-
         await checkAgentLimit(state.userId, "pdf");
-
-        console.log(
-            `[PDF] Agent limit check completed | ${Date.now() - limitStart}ms`
-        );
-
-        const llmStart = Date.now();
 
         const llm = getModel("pdf");
 
-        console.log(
-            `[PDF] Model initialized | ${Date.now() - llmStart}ms`
-        );
+        const llmStart = Date.now();
 
         const prompt = `
 You are Orchestrix PDF Generator.
@@ -70,17 +58,11 @@ Topic:
 ${state.prompt}
 `;
 
-        console.log(`[PDF] Prompt prepared`);
-
-        const llmInvokeStart = Date.now();
-
         const res = await llm.invoke(prompt);
 
         console.log(
-            `[PDF] LLM response received | ${Date.now() - llmInvokeStart}ms`
+            `[PDF] LLM completed | ${Date.now() - llmStart}ms`
         );
-
-        const parseStart = Date.now();
 
         let text = "";
 
@@ -127,17 +109,7 @@ ${state.prompt}
             throw new Error("Model returned malformed JSON.");
         }
 
-        console.log(
-            `[PDF] Response parsed successfully | ${Date.now() - parseStart}ms`
-        );
-
-        const creditStart = Date.now();
-
         await deductCredits(state.userId, "pdf");
-
-        console.log(
-            `[PDF] Credits deducted | ${Date.now() - creditStart}ms`
-        );
 
         const pdfStart = Date.now();
 
@@ -147,9 +119,9 @@ ${state.prompt}
             `[PDF] PDF generated | ${Date.now() - pdfStart}ms | size=${pdfBuffer.length} bytes`
         );
 
-        const uploadStart = Date.now();
-
         const filename = `pdf-${Date.now()}.pdf`;
+
+        const uploadStart = Date.now();
 
         await uploadToS3(
             filename,
@@ -158,16 +130,10 @@ ${state.prompt}
         );
 
         console.log(
-            `[PDF] PDF uploaded to S3 | ${Date.now() - uploadStart}ms`
+            `[PDF] S3 upload completed | ${Date.now() - uploadStart}ms`
         );
-
-        const urlStart = Date.now();
 
         const downloadUrl = await getFromS3(filename, 600);
-
-        console.log(
-            `[PDF] Download URL generated | ${Date.now() - urlStart}ms`
-        );
 
         console.log(
             `[PDF] Request completed | total=${Date.now() - requestStart}ms`
