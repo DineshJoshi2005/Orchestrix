@@ -153,8 +153,8 @@ const ChatInput = () => {
 
             setSelectedFile(null);
 
-            if (fileRef?.current) {
-                fileRef?.current.value = "";
+            if (fileRef.current) {
+                fileRef.current.value = "";
             }
         }
     };
