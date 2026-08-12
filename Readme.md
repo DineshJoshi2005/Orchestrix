@@ -76,12 +76,10 @@ Orchestrix follows a modular **microservices architecture** where individual bac
 
 
                                          AWS ECS / Fargate + Amazon ECR
+```
+# 🤖 Multi-Agent AI System
 
-🤖 Multi-Agent AI System
-
-The core of Orchestrix is a LangGraph-based agent workflow.
-
-Instead of sending every user request directly to a single LLM, Orchestrix uses specialized AI agents to process different types of tasks.
+The core of Orchestrix is a LangGraph-based agent workflow.Instead of sending every user request directly to a single LLM, Orchestrix uses specialized AI agents to process different types of tasks.
 
 Examples include:
 
@@ -90,7 +88,7 @@ PDF Agent
 Other specialized AI agents
 
 A simplified workflow looks like:
-
+```text
                     User Request
                          │
                          ▼
@@ -107,17 +105,17 @@ A simplified workflow looks like:
             └────────────┼─────────────┘
                          ▼
                     LLM Response
-
+```
 Each agent is responsible for specialized AI processing and can interact with the shared workflow state.
 
-🧠 LangGraph Workflow
+# 🧠 LangGraph Workflow
 
 LangGraph is used to build stateful AI workflows.
 
 The workflow maintains application state while different nodes perform specialized operations.
 
 A simplified flow:
-
+```text
                     User Request
                         │
                         ▼
@@ -144,15 +142,15 @@ LLM Processing   LLM Processing   LLM Processing   LLM Processing
                          │
                          ▼
                   Return Response
-
-🔗 LangChain and LLM Integration
+```
+# 🔗 LangChain and LLM Integration
 
 Orchestrix uses LangChain to integrate Large Language Models into the agent workflows.
 
 LangChain is used as the LLM interaction layer while LangGraph handles the workflow and state orchestration.
 
 The general flow is:
-
+```text
                 User Request
                     │
                     ▼
@@ -169,17 +167,17 @@ The general flow is:
                     │
                     ▼
                 AI Response     
-
-📚 Retrieval-Augmented Generation (RAG)
+```
+# 📚 Retrieval-Augmented Generation (RAG)
 
 Orchestrix uses Retrieval-Augmented Generation (RAG) to allow users to upload PDFs and provide external data as additional knowledge for the AI. The uploaded information is processed and relevant context is retrieved when required, allowing the LLM to generate responses grounded in the user's provided data.
 
-🧠 Redis Context Memory
+# 🧠 Redis Context Memory
 
 Redis is used for maintaining AI-related conversational context and memory.
 
 The general flow is:
-
+```text
         User Message
             │
             ▼
@@ -196,11 +194,11 @@ The general flow is:
             │
             ▼
            Redis
-
-🧩 Backend Architecture
+```
+# 🧩 Backend Architecture
 
 The backend follows a microservices architecture with independently deployable services.
-
+```text
 backend/
 │
 ├── gateway/
@@ -214,12 +212,12 @@ backend/
     ├── agent/
     │
     └── billing/
-
-Gateway Service
+```
+**Gateway Service**
 
 The Gateway acts as the entry point for frontend API requests and routes requests to the appropriate backend service.
 
-Authentication Service
+**Authentication Service**
 
 Responsible for authentication-related functionality including:
 
@@ -227,7 +225,7 @@ User registration
 Login
 
 
-Chat Service
+**Chat Service**
 
 Responsible for:
 
@@ -236,7 +234,7 @@ Messages
 Chat history
 Persisting AI interactions
 
-Agent Service
+**Agent Service**
 
 The AI processing layer responsible for:
 
@@ -248,7 +246,7 @@ Specialized AI agents
 Artifact generation
 RAG-based processing
 
-Billing Service
+**Billing Service**
 
 Responsible for:
 
@@ -258,7 +256,7 @@ Agent limits
 Credit deduction
 
 
-⚛️ Frontend Architecture
+# ⚛️ Frontend Architecture
 
 The frontend is built using React with Redux for centralized state management.
 
@@ -274,7 +272,7 @@ Loading states
 Application state
 
 A simplified frontend flow:
-
+```text
                     React Application
                            │
                            ▼
@@ -288,10 +286,11 @@ A simplified frontend flow:
           └────────────────┼────────────────┘
                            ▼
                        UI Updates
-🐳 Docker
+```                       
+# 🐳 Docker
 
 Each backend service is containerized independently using Docker.
-
+```text
 Auth Service
      │
      ▼
@@ -302,19 +301,19 @@ Amazon ECR
      │
      ▼
 AWS ECS/Fargate
-
+```
 The same deployment model is used for the other backend services.
 
 Containerization provides isolated and reproducible environments for each microservice.
 
-☁️ AWS Deployment
+# ☁️ AWS Deployment
 
 The backend services are deployed using Amazon ECS with AWS Fargate.
 
 Docker images are stored in Amazon ECR.
 
 The deployment architecture is:
-
+```text
 GitHub
    │
    ▼
@@ -334,8 +333,8 @@ AWS ECS/Fargate
    ├── Chat
    ├── Agent
    └── Billing
-
-AWS services and infrastructure used include:
+```
+**AWS services and infrastructure used include:**
 
 Amazon ECS
 AWS Fargate
@@ -347,12 +346,12 @@ Security Groups
 IAM
 
 
-🔄 CI/CD Pipeline
+# 🔄 CI/CD Pipeline
 
 Orchestrix uses GitHub Actions for automated backend deployment.
 
 The deployment process includes:
-
+```text
 Git Push
    │
    ▼
@@ -372,11 +371,11 @@ Update ECS Service
    │
    ▼
 Deploy New Container
-
+```
 The CI/CD workflow uses path-based deployment so backend services can be deployed independently when their corresponding code changes.
 
 For example:
-
+```text
 Agent code changes
         │
         ▼
@@ -390,15 +389,15 @@ Push Agent image to ECR
         │
         ▼
 Deploy Agent ECS service
-
+```
 This avoids unnecessarily redeploying unrelated services.
 
-📄 AI-Generated Artifacts
+# 📄 AI-Generated Artifacts
 
 Orchestrix can generate artifacts as part of AI workflows.
 
 For example, the PDF Agent can:
-
+```text
 User Request
      │
      ▼
@@ -418,7 +417,7 @@ Amazon S3
      │
      ▼
 Temporary Download URL
-
+```
 Generated files can then be accessed through the application.
 
 # 🔐 Authentication
@@ -436,12 +435,12 @@ The platform currently supports:
 
 Sensitive credentials and secrets are managed using environment variables and deployment secrets rather than being committed to the repository.
 
-💳 Credit-Based Usage System
+# 💳 Credit-Based Usage System
 
 Orchestrix implements a credit-based usage system for controlling AI agent consumption.
 
 The billing service manages:
-
+```text
 User
  │
  ▼
@@ -458,22 +457,25 @@ Deduct Credits
  │
  ▼
 Store Usage
-
+```
 This allows different AI capabilities to be controlled based on user credits and usage limits.
 
-🛠️ Technology Stack
-Frontend
+# 🛠️ Technology Stack
+
+**Frontend**
 React
 Redux
 JavaScript
 HTML
 CSS
-Backend
+
+**Backend**
 Node.js
 Express.js
 REST APIs
 Microservices Architecture
-AI / Generative AI
+
+**AI / Generative AI**
 Large Language Models (LLMs)
 LangChain
 LangGraph
@@ -482,11 +484,13 @@ Multi-Agent AI
 AI Agent Workflows
 Prompt Engineering
 Stateful AI Workflows
-Data / Memory / Storage
+
+**Data / Memory / Storage**
 Redis
 MongoDB
 Amazon S3
-DevOps / Cloud
+
+**DevOps / Cloud**
 Docker
 Amazon ECS
 AWS Fargate
@@ -497,7 +501,8 @@ AWS VPC
 AWS Security Groups
 IAM
 
-📂 Project Structure
+# 📂 Project Structure
+```text
 Orchestrix/
 │
 ├── frontend/
@@ -524,9 +529,9 @@ Orchestrix/
 ├── docker-compose.yml
 │
 └── README.md
+```
 
-
-🔒 Security
+# 🔒 Security
 
 Sensitive configuration is not committed to the repository.
 
@@ -540,7 +545,7 @@ Authentication secrets
 
 
 
-📈 Engineering Concepts Demonstrated
+# 📈 Engineering Concepts Demonstrated
 
 Orchestrix demonstrates practical implementation of:
 
@@ -570,7 +575,7 @@ Cloud Networking
 Service Isolation
 Independent Microservice Deployment
 
-🚀 Future Improvements
+# 🚀 Future Improvements
 
 Potential future improvements for Orchestrix include:
 
@@ -589,14 +594,13 @@ Improved AI agent routing
 Advanced AI usage analytics
 
 
-🌐 Live Application
+# 🌐 Live Application
 
 Try Orchestrix:
 
 https://orchestrix-frontend.vercel.app
 
-👨‍💻 Author
+# 👨‍💻 Author
 
-Dinesh
+**Dinesh Joshi**
 
-Computer Science & Engineering
