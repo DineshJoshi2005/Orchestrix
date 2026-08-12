@@ -25,9 +25,7 @@ export const generatePdf = async (data) => {
             doc.page.margins.left -
             doc.page.margins.right;
 
-        // ==========================
-        // Title
-        // ==========================
+        const bottomLimit = doc.page.height - 70;
 
         doc
             .fillColor("#2563EB")
@@ -38,7 +36,6 @@ export const generatePdf = async (data) => {
             });
 
         if (data.subtitle) {
-
             doc.moveDown(0.5);
 
             doc
@@ -48,25 +45,26 @@ export const generatePdf = async (data) => {
                 .text(data.subtitle, {
                     align: "center"
                 });
-
         }
 
         doc.moveDown(1.5);
 
-        // ==========================
-        // Sections
-        // ==========================
-
         (data.sections || []).forEach(section => {
 
-            // New page if required
-            if (doc.y > 680) {
+            const heading = section.heading || "";
+
+            doc
+                .font("Helvetica-Bold")
+                .fontSize(17);
+
+            const headingHeight = 30;
+
+            if (doc.y + headingHeight + 25 > bottomLimit) {
                 doc.addPage();
             }
 
             const headerY = doc.y;
 
-            // Header background
             doc
                 .roundedRect(
                     doc.page.margins.left,
@@ -77,29 +75,52 @@ export const generatePdf = async (data) => {
                 )
                 .fill("#EEF2FF");
 
-            // Header text
             doc
                 .fillColor("#1D4ED8")
                 .font("Helvetica-Bold")
                 .fontSize(17)
                 .text(
-                    section.heading || "",
+                    heading,
                     doc.page.margins.left + 12,
-                    headerY + 8
+                    headerY + 8,
+                    {
+                        width: pageWidth - 24,
+                        height: 20
+                    }
                 );
 
-            doc.moveDown(2);
+            doc.y = headerY + 42;
 
-            // Bullet points
             (section.points || []).forEach(point => {
 
-                if (doc.y > 720) {
+                const bulletText = String(point || "").trim();
+
+                if (!bulletText) {
+                    return;
+                }
+
+                doc
+                    .font("Helvetica")
+                    .fontSize(11);
+
+                const textWidth = pageWidth - 15;
+
+                const textHeight = doc.heightOfString(
+                    bulletText,
+                    {
+                        width: textWidth,
+                        lineGap: 5
+                    }
+                );
+
+                const requiredHeight = textHeight + 18;
+
+                if (doc.y + requiredHeight > bottomLimit) {
                     doc.addPage();
                 }
 
                 const startY = doc.y;
 
-                // Blue bullet
                 doc
                     .fillColor("#2563EB")
                     .circle(
@@ -109,47 +130,41 @@ export const generatePdf = async (data) => {
                     )
                     .fill();
 
-                // Bullet text
                 doc
                     .fillColor("#374151")
                     .font("Helvetica")
                     .fontSize(11)
                     .text(
-                        point,
+                        bulletText,
                         doc.page.margins.left + 15,
                         startY,
                         {
-                            width: pageWidth - 15,
+                            width: textWidth,
                             lineGap: 5,
                             align: "justify"
                         }
                     );
 
                 doc.moveDown(0.8);
-
             });
 
-            // Separator line
-            doc
-                .strokeColor("#E5E7EB")
-                .lineWidth(1)
-                .moveTo(
-                    doc.page.margins.left,
-                    doc.y
-                )
-                .lineTo(
-                    doc.page.width - doc.page.margins.right,
-                    doc.y
-                )
-                .stroke();
+            if (doc.y + 15 < bottomLimit) {
+                doc
+                    .strokeColor("#E5E7EB")
+                    .lineWidth(1)
+                    .moveTo(
+                        doc.page.margins.left,
+                        doc.y
+                    )
+                    .lineTo(
+                        doc.page.width - doc.page.margins.right,
+                        doc.y
+                    )
+                    .stroke();
 
-            doc.moveDown();
-
+                doc.moveDown();
+            }
         });
-
-        // ==========================
-        // Footer
-        // ==========================
 
         const range = doc.bufferedPageRange();
 
@@ -158,7 +173,6 @@ export const generatePdf = async (data) => {
             i < range.start + range.count;
             i++
         ) {
-
             doc.switchToPage(i);
 
             doc
@@ -183,6 +197,5 @@ export const generatePdf = async (data) => {
         }
 
         doc.end();
-
     });
 };

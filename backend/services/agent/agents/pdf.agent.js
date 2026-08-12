@@ -18,7 +18,7 @@ export const pdfAgent = async (state) => {
         const prompt = `
 You are Orchestrix PDF Generator.
 
-Generate a professional educational PDF.
+Create a professional, educational PDF about the given topic.
 
 Return ONLY a valid JSON object.
 
@@ -28,30 +28,35 @@ Never return \`\`\`.
 
 Never explain anything.
 
+Do not return markdown, code fences, explanations, or extra text.
+
 JSON Format:
 
-{
-"title":"",
-"subtitle":"",
-"sections":[
-{
-"heading":"",
-"points":[]
-}
-]
-}
+    {
+    "title": "",
+    "subtitle": "",
+    "sections": [
+        {
+        "heading": "",
+        "points": []
+        }
+    ]
+    }
 
 Requirements:
 
-- Generate 5-6 sections.
-- Every section should have a heading.
-- Every section should contain 4-5 detailed bullet points.
-- Every bullet should contain roughly 35-60 words.
-- Include examples wherever appropriate.
-- Explain concepts instead of giving summaries.
-- Maintain a logical order.
-- Avoid repetition.
-- Total length should be around 1200-1600 words.
+- Generate 4-5 sections.
+- Each section must have a clear heading.
+- Each section must contain 3-4 informative bullet points.
+- Each bullet should be approximately 25-40 words.
+- Explain the topic clearly and concisely.
+- Include examples when useful.
+- Maintain a logical flow from basic to advanced concepts.
+- Avoid repetition and unnecessary details.
+- Keep the total content around 600-900 words.
+- Do not create empty sections.
+- Do not create empty bullet points.
+- Do not add extra sections after completing the topic.
 
 Topic:
 
