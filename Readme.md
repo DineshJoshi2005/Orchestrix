@@ -221,39 +221,39 @@ The Gateway acts as the entry point for frontend API requests and routes request
 
 Responsible for authentication-related functionality including:
 
-User registration
-Login
+- User registration
+- Login
 
 
 **Chat Service**
 
 Responsible for:
 
-Conversations
-Messages
-Chat history
-Persisting AI interactions
+- Conversations
+- Messages
+- Chat history
+- Persisting AI interactions
 
 **Agent Service**
 
 The AI processing layer responsible for:
 
-Agent routing
-LangGraph workflows
-LangChain LLM integration
-AI context
-Specialized AI agents
-Artifact generation
-RAG-based processing
+- Agent routing
+- LangGraph workflows
+- LangChain LLM integration
+- AI context
+- Specialized AI agents
+- Artifact generation
+- RAG-based processing
 
 **Billing Service**
 
 Responsible for:
 
-Credit management
-Usage tracking
-Agent limits
-Credit deduction
+- Credit management
+- Usage tracking
+- Agent limits
+- Credit deduction
 
 
 # ⚛️ Frontend Architecture
@@ -262,14 +262,14 @@ The frontend is built using React with Redux for centralized state management.
 
 The frontend manages:
 
-Authentication state
-Conversations
-Messages
-Selected conversations
-AI responses
-Generated artifacts
-Loading states
-Application state
+- Authentication state
+- Conversations
+- Messages
+- Selected conversations
+- AI responses
+- Generated artifacts
+- Loading states
+- Application state
 
 A simplified frontend flow:
 ```text
@@ -336,14 +336,14 @@ AWS ECS/Fargate
 ```
 **AWS services and infrastructure used include:**
 
-Amazon ECS
-AWS Fargate
-Amazon ECR
-Amazon S3
-Redis
-VPC
-Security Groups
-IAM
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
+- Amazon S3
+- Redis
+- VPC
+- Security Groups
+- IAM
 
 
 # 🔄 CI/CD Pipeline
@@ -463,43 +463,43 @@ This allows different AI capabilities to be controlled based on user credits and
 # 🛠️ Technology Stack
 
 **Frontend**
-React
-Redux
-JavaScript
-HTML
-CSS
+- React
+- Redux
+- JavaScript
+- HTML
+- CSS
 
 **Backend**
-Node.js
-Express.js
-REST APIs
-Microservices Architecture
+- Node.js
+- Express.js
+- REST APIs
+- Microservices Architecture
 
 **AI / Generative AI**
-Large Language Models (LLMs)
-LangChain
-LangGraph
-Retrieval-Augmented Generation (RAG)
-Multi-Agent AI
-AI Agent Workflows
-Prompt Engineering
-Stateful AI Workflows
+- Large Language Models (LLMs)
+- LangChain
+- LangGraph
+- Retrieval-Augmented Generation (RAG)
+- Multi-Agent AI
+- AI Agent Workflows
+- Prompt Engineering
+- Stateful AI Workflows
 
 **Data / Memory / Storage**
-Redis
-MongoDB
-Amazon S3
+- Redis
+- MongoDB
+- Amazon S3
 
 **DevOps / Cloud**
-Docker
-Amazon ECS
-AWS Fargate
-Amazon ECR
-GitHub Actions
-Vercel
-AWS VPC
-AWS Security Groups
-IAM
+- Docker
+- Amazon ECS
+- AWS Fargate
+- Amazon ECR
+- GitHub Actions
+- Vercel
+- AWS VPC
+- AWS Security Groups
+- IAM
 
 # 📂 Project Structure
 ```text
@@ -537,11 +537,11 @@ Sensitive configuration is not committed to the repository.
 
 Environment variables and deployment secrets are used for sensitive configuration such as:
 
-LLM API keys
-Database credentials
-Redis credentials
-AWS credentials
-Authentication secrets
+- LLM API keys
+- Database credentials
+- Redis credentials
+- AWS credentials
+- Authentication secrets
 
 
 
@@ -549,49 +549,49 @@ Authentication secrets
 
 Orchestrix demonstrates practical implementation of:
 
-Multi-Agent AI Systems
-Large Language Model Integration
-AI Agent Orchestration
-LangGraph State Management
-LangChain
-Retrieval-Augmented Generation
-Conversational AI Memory
-Redis
-Microservices Architecture
-REST API Design
-Authentication
-Credit-Based Billing
-State Management with Redux
-Containerization
-Docker
-Cloud Deployment
-AWS ECS/Fargate
-Amazon ECR
-Amazon S3
-GitHub Actions
-CI/CD
-Vercel Deployment
-Cloud Networking
-Service Isolation
-Independent Microservice Deployment
+- Multi-Agent AI Systems
+- Large Language Model Integration
+- AI Agent Orchestration
+- LangGraph State Management
+- LangChain
+- Retrieval-Augmented Generation
+- Conversational AI Memory
+- Redis
+- Microservices Architecture
+- REST API Design
+- Authentication
+- Credit-Based Billing
+- State Management with Redux
+- Containerization
+- Docker
+- Cloud Deployment
+- AWS ECS/Fargate
+- Amazon ECR
+- Amazon S3
+- GitHub Actions
+- CI/CD
+- Vercel Deployment
+- Cloud Networking
+- Service Isolation
+- Independent Microservice Deployment
 
 # 🚀 Future Improvements
 
 Potential future improvements for Orchestrix include:
 
-Infrastructure as Code using Terraform
-Kubernetes deployment
-Automated observability and monitoring
-Distributed tracing
-Centralized logging
-Advanced RAG pipelines
-Agent evaluation and monitoring
-Automated testing pipelines
-Automatic service scaling
-Asynchronous message processing
-Production-grade API Gateway
-Improved AI agent routing
-Advanced AI usage analytics
+- Infrastructure as Code using Terraform
+- Kubernetes deployment
+- Automated observability and monitoring
+- Distributed tracing
+- Centralized logging
+- Advanced RAG pipelines
+- Agent evaluation and monitoring
+- Automated testing pipelines
+- Automatic service scaling
+- Asynchronous message processing
+- Production-grade API Gateway
+- Improved AI agent routing
+- Advanced AI usage analytics
 
 
 # 🌐 Live Application
